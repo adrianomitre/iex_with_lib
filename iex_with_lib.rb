@@ -2,12 +2,12 @@
 
 require 'pry-byebug'
 
-def add_deps(project_path)
+def replace_deps(project_path)
   deps_lines =
     ARGV.map do |arg|
       lib, version = arg.split('-')
       version ||= ">= 0.0.0"
-      %Q({:#{lib}, "#{version}"})
+      ' '*6 + %Q({:#{lib}, "#{version}"})
     end.join(",\n")
 
   lines_to_add = <<-EOS.lines
@@ -25,6 +25,7 @@ def add_deps(project_path)
   File.write(mix_exs_path, altered_content)
 end  
 
+PROJECT_NAME = 'iex_tmp'
 if __FILE__ == $PROGRAM_NAME
   require 'tmpdir'
 
@@ -33,13 +34,12 @@ if __FILE__ == $PROGRAM_NAME
     exit
   end
 
-  PROJECT_NAME = 'iex_tmp'
   Dir.mktmpdir do |tmp_dir|
     Dir.chdir(tmp_dir)
     system "mix new #{PROJECT_NAME}"
-    Dir.chdir(PROJECT_NAME)
     project_path = File.join(tmp_dir, PROJECT_NAME)
-    add_deps(project_path)
+    replace_deps(project_path)
+    Dir.chdir(project_path)
     system "mix deps.get"
     system "iex -S mix"
   end
