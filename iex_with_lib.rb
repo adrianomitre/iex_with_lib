@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'pry-byebug'
-
 def replace_deps(project_path)
   deps_lines =
     ARGV.map do |arg|
