@@ -41,6 +41,6 @@ if __FILE__ == $PROGRAM_NAME
     replace_deps(project_path)
     Dir.chdir(project_path)
     system "mix deps.get"
-    system "iex -S mix"
+    system "iex -S mix run --no-start"
   end
 end
